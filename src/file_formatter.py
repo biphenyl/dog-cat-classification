@@ -11,7 +11,7 @@ class FileFormatter():
 
     def generate_label(self, label_type_dict):
         '''
-        generate label list by given label dictionary
+        Generate label list by given label dictionary
         '''
         self.label_list = np.ones(len(self.img_file_list), dtype=np.int32) * -1
         for i in range(len(self.img_file_list)):
@@ -23,7 +23,7 @@ class FileFormatter():
 
     def k_fold_split(self, n_splits, shuffle=True, random_state=42):
         '''
-        split data into different folds
+        Split data into different folds
         '''
         self.fold_index = np.zeros(len(self.img_file_list), dtype=np.int32)
 
@@ -34,7 +34,7 @@ class FileFormatter():
 
     def output_csv(self, csv_path=''):
         '''
-        saved image path, label and fold to a csv file
+        Saved image path, label and fold to a csv file
         '''
         output_list = [[self.img_file_list[i], self.label_list[i], self.fold_index[i]] for i in range(len(self.img_file_list))]
         df = pd.DataFrame(output_list, columns=['image_name', 'label', 'fold'])
@@ -44,7 +44,7 @@ class FileFormatter():
 class FormattedDataLoader():
     def __init__(self, split_csv_save_location):
         '''
-        load image pathes, label and fold form csv file and perform one-hot encoding of the label
+        Load image pathes, label and fold form csv file and perform one-hot encoding of the label.
         '''
         df = pd.read_csv(split_csv_save_location)
 
@@ -60,7 +60,7 @@ class FormattedDataLoader():
 
     def get_fold_data(self, k):
         '''
-        return training and validation data/labels by given fold
+        Return training and validation data/labels by given fold.
         '''
 
         train_img_path = self.image_path[self.fold!=k]
@@ -70,16 +70,3 @@ class FormattedDataLoader():
         valid_label = self.one_hot_label[self.fold==k]
 
         return ((train_img_path, train_label), (valid_img_path, valid_label))
-
-
-
-if __name__ == '__main__':
-    # test
-
-    file_formatter = FileFormatter('py_code/aether/train')
-    file_formatter.generate_label({'cat':0, 'dog':1})
-    file_formatter.k_fold_split(n_splits=5, shuffle=True)
-    file_formatter.output_csv('py_code/aether/train_index.csv')
-
-    
-

@@ -1,7 +1,8 @@
 import tensorflow as tf
 
 '''
-additional custom metrics for monitoring training process
+Additional custom metrics for monitoring training process.
+They were only used in training process for now.
 '''
 
 def tp(y_true, y_pred):

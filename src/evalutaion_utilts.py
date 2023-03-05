@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 from model_training import pad_and_resize
 
 class ModelValidator():
+    '''
+    A class perform evaluation and process evaluation result into demaned forms.
+    '''
     def __init__(self, model):
         self.model = model
         self.predicted_scores_list = []
@@ -20,8 +23,10 @@ class ModelValidator():
 
 
     def perform_validation(self, valid_img_path, valid_label, batch_size=64, img_size=(224,224)):
-        # perform evaluation by given image pathes and labels, 
-        # the result would be append to self.predicted_scores_list
+        '''
+        Perform evaluation by given image pathes and labels, the result would be append to self.predicted_scores_list.
+        The labels will be appended to self.true_labels_list for easy comparison.
+        '''
 
         predict_score = np.zeros(len(valid_img_path))
         true_label = np.argmax(valid_label, axis=1)
@@ -51,7 +56,9 @@ class ModelValidator():
 
 
     def get_fold_metrics(self, k):
-        # get metrics of certain fold
+        '''
+        Get metrics of certain fold.
+        '''
         predict_score_k = self.predicted_scores_list[k]
         true_label_k = self.true_labels_list[k]
 
@@ -59,7 +66,9 @@ class ModelValidator():
     
     
     def get_combined_metrics(self):
-        # get metrics of combined validation result
+        '''
+        Get metrics of combined validation result
+        '''
         combined_predict_score = np.concatenate(self.predicted_scores_list)
         combined_true_label = np.concatenate(self.true_labels_list)
 
@@ -67,8 +76,9 @@ class ModelValidator():
 
 
     def get_metrics_dict(self, predict_score, true_label):
-        # get dictionary of metrics 
-
+        '''
+        Get dictionary of needed metrics, the metrics were fixed now.
+        '''
         predict_label = np.rint(predict_score)
 
         metrics_dict = {}
@@ -83,7 +93,9 @@ class ModelValidator():
     
 
     def output_metrics_csv(self, csv_save_path):
-        # write metric of every fold and combined into a csv file 
+        '''
+        Write the metrics of each fold that performed validation and their combined result into a csv file.
+        '''
 
         csv_cols = []
         csv_indices = []
@@ -117,7 +129,9 @@ class ModelValidator():
 
 
     def draw_confusion_matrix(self, cm_image_save_path):
-        # draw confusion matrix of every fold and the combined result
+        '''
+        Draw confusion matrix of each fold and their combined result, and save them into a single image.
+        '''
 
         # setup canvas
         subplot_height = int(np.ceil((len(self.predicted_scores_list)+1)/5))
@@ -159,6 +173,9 @@ class ModelValidator():
 
 
     def plot_roc_curve(self, roc_plot_save_path):
+        '''
+        Plot ROC curve of each folds on one plot and the curve of combined result on another one, save them into a single image.
+        '''
 
         plt.figure(figsize = (8, 16))
         plt.subplot(2,1,1)
@@ -184,17 +201,3 @@ class ModelValidator():
         except OSError:
             print('failed to save roc curve image at', roc_plot_save_path)
     
-        
-
-        
-        
-            
-            
-
-
-
-        
-        
-
-
-

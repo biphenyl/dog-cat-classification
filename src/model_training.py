@@ -1,5 +1,4 @@
 import tensorflow as tf
-import pandas as pd
 import numpy as np
 import os
 import math
@@ -19,8 +18,10 @@ class ResNetModel():
         self.create_model()
 
 
-    # create a resnet-50 model
     def create_model(self):
+        '''
+        Create a resnet-50 model for two class classification
+        '''
         
         input_layer = tf.keras.Input(self.image_size)
 
@@ -37,20 +38,29 @@ class ResNetModel():
 
 
     def add_metrics(self, metrics):
+        '''
+        Add given metrics to be monitored during training
+        '''
         if isinstance(metrics, list):
             self.metrics.extend(metrics)
         else:
             self.metrics.append(metrics)
 
 
-    # define optimizer, loss and metrics
     def compile_model(self):
+        '''
+        Define optimizer, loss and metrics and compiled the model for training.
+        The parameters were fixed now.
+        '''
         
         self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4), 
                         loss='categorical_crossentropy', metrics=self.metrics)
 
 
     def train_model(self, train_generator, valid_generator, record_save_path):
+        '''
+        Train the model by given training and validation generators, also record trained models to record_save_path.
+        '''
 
         if not os.path.isdir(record_save_path):
             os.mkdir(record_save_path)
@@ -67,8 +77,11 @@ class ResNetModel():
     def load_weights(self, model_weights_file_path):
          self.model.load_weights(model_weights_file_path)
 
-# generator for dataset
+
 class DogCatGenerator(tf.keras.utils.Sequence):
+    '''
+    A generator of the dataset, allow the model to load and preprocess images during training.
+    '''
     def __init__(self, x_set, y_set, batch_size, img_size):
         self.x = x_set
         self.y = y_set
@@ -88,55 +101,23 @@ class DogCatGenerator(tf.keras.utils.Sequence):
         return batch_x, batch_y
     
 
-    # load data, preprocess and cast to ndarray
     def img_path_to_arr(self, path):
+        '''
+        load data from given path, preprocess it and cast it to an numpy array.
+        '''
         img = tf.keras.preprocessing.image.load_img(path)
         img = pad_and_resize(img, (self.img_size))
         img_arr = tf.keras.preprocessing.image.img_to_array(img)
 
         return img_arr
     
-# pad image into a square and resized it into demanded size
+
 def pad_and_resize(img: Image.Image, new_size):
+    '''
+    pad image into a square and resized it into given size 
+    '''
     long_side = img.height if img.height>img.width else img.width
     img = ImageOps.pad(img, (long_side, long_side))
     img = img.resize((new_size[0], new_size[1]))
 
     return img
-
-def tp(y_true, y_pred):
-	y_true = tf.keras.backend.argmax(y_true)
-	y_true = tf.cast(y_true, tf.float64)
-	y_pred = tf.keras.backend.argmax(y_pred)
-	y_pred = tf.cast(y_pred, tf.float64)
-	
-	tp = tf.keras.backend.sum(y_true * y_pred)
-	return tp
-def fp(y_true, y_pred):
-	y_true = tf.keras.backend.argmax(y_true)
-	y_true = tf.cast(y_true, tf.float64)
-	y_pred = tf.keras.backend.argmax(y_pred)
-	y_pred = tf.cast(y_pred, tf.float64)
-
-	neg_y_true = 1 - y_true
-	fp = tf.keras.backend.sum(neg_y_true * y_pred)
-	return fp
-def tn(y_true, y_pred):
-	y_true = tf.keras.backend.argmax(y_true)
-	y_true = tf.cast(y_true, tf.float64)
-	y_pred = tf.keras.backend.argmax(y_pred)
-	y_pred = tf.cast(y_pred, tf.float64)
-
-	neg_y_true = 1 - y_true
-	neg_y_pred = 1 - y_pred
-	tn = tf.keras.backend.sum(neg_y_true * neg_y_pred)
-	return tn
-def fn(y_true, y_pred):
-	y_true = tf.keras.backend.argmax(y_true)
-	y_true = tf.cast(y_true, tf.float64)
-	y_pred = tf.keras.backend.argmax(y_pred)
-	y_pred = tf.cast(y_pred, tf.float64)
-
-	neg_y_pred = 1 - y_pred
-	fn = tf.keras.backend.sum(y_true * neg_y_pred)
-	return fn
