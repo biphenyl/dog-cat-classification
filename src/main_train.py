@@ -20,7 +20,7 @@ if __name__ == '__main__':
     shuffile = config['K_FOLD_SPLIT_INFO'].getboolean('shuffle')
     random_state = int(config['K_FOLD_SPLIT_INFO']['random_state'])
     split_csv_save_location = config['FILE_PATHES']['split_csv_save_location']
-    keep_old_split = config.getboolean(config['FILE_PATHES']['keep_old_split'])
+    keep_old_split = config.getboolean(config['K_FOLD_SPLIT_INFO']['keep_old_split'])
 
     # format dataset and split data for k-fold validation or use old split
     if (not os.path.isfile(split_csv_save_location)) or (not keep_old_split):
