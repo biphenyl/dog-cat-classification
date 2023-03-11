@@ -17,16 +17,16 @@ if __name__ == '__main__':
     image_location = config['FILE_PATHES']['image_location']
     label_dict = {'cat':0, 'dog':1}
     n_splits = int(config['K_FOLD_SPLIT_INFO']['n_splits'])
-    shuffile = config['K_FOLD_SPLIT_INFO'].getboolean('shuffle')
+    shuffle = config['K_FOLD_SPLIT_INFO'].getboolean('shuffle')
     random_state = int(config['K_FOLD_SPLIT_INFO']['random_state'])
     split_csv_save_location = config['FILE_PATHES']['split_csv_save_location']
-    keep_old_split = config.getboolean(config['FILE_PATHES']['keep_old_split'])
+    keep_old_split = config['K_FOLD_SPLIT_INFO'].getboolean('keep_old_split')
 
     # format dataset and split data for k-fold validation or use old split
     if (not os.path.isfile(split_csv_save_location)) or (not keep_old_split):
         my_file_formatter = FileFormatter(image_location)
         my_file_formatter.generate_label(label_dict)
-        my_file_formatter.k_fold_split(n_splits=n_splits, shuffle=shuffile, random_state=random_state)
+        my_file_formatter.k_fold_split(n_splits=n_splits, shuffle=shuffle, random_state=random_state)
         my_file_formatter.output_csv(split_csv_save_location)
         print('dataset info created.')
     else:

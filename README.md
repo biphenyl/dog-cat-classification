@@ -2,6 +2,8 @@
 
 A ResNet-50 model to classify dog and cat images. Dataset came from https://www.kaggle.com/competitions/dogs-vs-cats/data.
 
+My own tested result were saved at **demo_result** directory.
+
 # Environment
 
 The codes was test on Ubuntu 20.04.3 LTS with Python 3.8.10. 
@@ -9,9 +11,9 @@ Module requirements were listed in requirements.txt.
 
 # How to run
 
-Unzip the dataset to current diretory, or elsewhere and change setting in config.ini
+Unzip the dataset to current directory, or elsewhere and change setting in config.ini
 ```
-image_location = <path to image diretory>
+image_location = <path to image directory>
 ```
 
 Install required modules:

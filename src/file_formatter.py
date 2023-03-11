@@ -7,7 +7,9 @@ class FileFormatter():
 
     def __init__(self, img_dir):
         self.img_dir = img_dir
-        self.img_file_list = [os.path.join(img_dir, img_name) for img_name in os.listdir(img_dir)]
+
+        # shuffle files orders to prevent cat or dog data stick together
+        self.img_file_list = np.random.shuffle([os.path.join(img_dir, img_name) for img_name in os.listdir(img_dir)])
 
     def generate_label(self, label_type_dict):
         '''
